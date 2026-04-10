@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
     $description = trim($_POST["description"] ?? "");
     $prix = $_POST["prix"] ?? null;
     $categorie = trim($_POST["categorie"] ?? "");
-
+    $quantité = $_POST["quantité"] ?? null;
     if (!isset($_FILES["image"]) || $_FILES["image"]["error"] !== UPLOAD_ERR_OK) {
         echo "<p style='color:red;'>Veuillez sélectionner une image valide.</p>";
     } else {
@@ -41,9 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
         }
 
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $destination)) {
-            $requete = $db->prepare("INSERT INTO publication (nom, image, description, prix, categorie) VALUES(?, ?, ?, ?, ?)");
+            $requete = $db->prepare("INSERT INTO publication (nom, image, description, prix, categorie, quantité) VALUES(?, ?, ?, ?, ?, ?)");
 
-            if ($requete->execute([$nom, $db_path, $description, $prix, $categorie])) {
+            if ($requete->execute([$nom, $db_path, $description, $prix, $categorie, $quantité])) {
                 echo "<p style='color:green;'>Succès complet !</p>";
             } else {
                 echo "<p style='color:red;'>Erreur base de données</p>";
@@ -69,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
         <input type="file" name="image" accept="image/*" required>
         <textarea name="description" placeholder="Description"></textarea>
         <input type="number" name="prix" placeholder="Prix" required>
+        <input type="number" name="quantité" placeholder="Quantité disponible" required>
         <select name="categorie" required>
             <option value="">Sélectionnez une catégorie</option>
             <option value="T-shirt">T-shirt</option>
