@@ -7,8 +7,6 @@ body{
     font-family: 'Poppins', sans-serif;
     background: #f5f5f5;
     overflow-x: hidden;
-    overflow-x: hidden;
-    
 }
 header{
     position: fixed;
@@ -67,20 +65,31 @@ button{
     
 }
 /* la section de mon article */
-.card{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    
-    
+section{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
+.card{ 
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+
+}
+
 /* mon article */
 .article{
-    background: #fff;
+    
+    display: flex;
+    flex-wrap: wrap;
     padding: 20px;
     margin: 10px;
     border-radius: 5px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    
     
 }
 
@@ -89,15 +98,26 @@ button{
     width: 300px;
     height: 290px;
     object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
 }
 
 /* detail de l'article prix et panier d'achat */ 
 .detail_article{
     display: flex;
     flex-direction: column;
-    flex-direction: column;
     justify-content: space-between;
-    margin-top: 10px;
+    
+}
+
+.detail_article p{
+    
+    width: 300px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    padding: 10px;
 }
 
 
@@ -111,25 +131,19 @@ footer{
     margin-top: 20px;
 }
 /* Bouton de recherche */
-.seach-box{
+.search-box{
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
     margin-top: -30px;
-
-    
-    
-    
-    
 }
 .search-box input{
-    flex-basis: 00px;
+    flex-basis: 0;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 20px;
     outline: none;
-    padding: 10px;
     background-color: transparent;
 
 }
@@ -192,4 +206,154 @@ h1{
     justify-content: center;
     padding: 20px;
     
+}
+
+/* Styles pour modifier_article.php */
+.articles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.article-card {
+    
+    width: 320px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.article-card img {
+    width: 300px;
+    height: 290px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.article-info {
+    margin: 10px 0;
+}
+
+.article-info strong {
+    color: #333;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-modifier {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-modifier:hover {
+    background: #45a049;
+}
+
+.btn-supprimer {
+    background: #f44336;
+    color: white;
+}
+
+.btn-supprimer:hover {
+    background: #da190b;
+}
+
+.no-articles {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.modification-form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+.modification-form h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-actions button,
+.form-actions a {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.form-submit {
+    background: #4CAF50;
+    color: white;
+}
+
+.form-submit:hover {
+    background: #45a049;
+}
+
+.form-cancel {
+    background: #999;
+    color: white;
+}
+
+.form-cancel:hover {
+    background: #777;
+}
+
+.nav-links {
+    text-align: center;
+    padding: 20px;
+}
+
+.nav-links a {
+    margin: 0 10px;
 }
