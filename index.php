@@ -37,7 +37,7 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
                 <li><a href="#"><i class="fas fa-cart-shopping"></i></a></li> 
             </ul> 
         </nav>
-        <button><a href="login_user.html"><i class="fas fa-sign-in-alt"></i></a></button>
+        <button><a href="login_user.php"><i class="fas fa-sign-in-alt"></i></a></button>
     </header>
     <div class="container">
         <f orm action="" class="search-box">
