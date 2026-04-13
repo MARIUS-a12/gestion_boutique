@@ -66,12 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
 <body> 
      <header>
         <nav>  
-            <ul> 
+            <ul>
                 <li><a href="index.php">Accueil</a></li>
                 <li><a href="gestion_article.php">Gestion des Articles</a></li>
                 <li><a href="gestion_user.php">Gestion des Clients</a></li>
                 <li><a href="gestion_commande.html">Gestion des Commandes</a></li>
-                <li><a href="modif_article.html">Modification des Articles</a></li>
+                <li><a href="modifier_article.php">Modification des Articles</a></li>
             </ul>
         </nav>
     </header>

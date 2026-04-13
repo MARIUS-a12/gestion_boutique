@@ -24,7 +24,7 @@ $articles = $sql->fetchAll(PDO::FETCH_ASSOC);
 <body>
    
     <h1>Gestion des Articles</h1>
-    <div class="containter">
+    <div class="container">
         <div class="card">
             <?php foreach($articles as $article): ?>
                 <div class="article">

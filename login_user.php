@@ -37,8 +37,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['Enregistrer'])){
     <h1>créer un compte</h1>
     <div class="box">
         <form action="" class=" search-box login-user" method="POST">
-            <input type="text" name="nom" id="" placeholder="nom complet...">
-            <input type="number" name="contact" id="" placeholder="contact...">
+            <input type="text" name="nom" id="" placeholder="nom complet..." required>
+            <input type="number" name="contact" id="" placeholder="contact..." required>
             <input type="submit" name="Enregistrer" id="">
         </form>
     </div>
