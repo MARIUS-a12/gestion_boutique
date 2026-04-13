@@ -61,14 +61,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body> 
      <header>
-        <nav> 
-            <ul>
+        <nav>  
+            <ul> 
                 <li><a href="index.php">Accueil</a></li>
-                <li><a href="gestion_article.html">Gestion des Articles</a></li>
-                <li><a href="gestion_client.html">Gestion des Clients</a></li>
+                <li><a href="gestion_article.php">Gestion des Articles</a></li>
+                <li><a href="gestion_user.php">Gestion des Clients</a></li>
                 <li><a href="gestion_commande.html">Gestion des Commandes</a></li>
                 <li><a href="modif_article.html">Modification des Articles</a></li>
             </ul>
