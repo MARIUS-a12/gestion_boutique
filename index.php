@@ -34,7 +34,7 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
             <ul>
                 <li><a href="#"><i class="fas fa-envelope"></i></a></li>
                 <li><a href="#"><i class="fas fa-bell"></i></a></li> 
-                <li><a href="#"><i class="fas fa-cart-shopping"></i></a></li> 
+                <li><a href="panier.php"><i class="fas fa-cart-shopping"></i></a></li> 
             </ul> 
         </nav>
         <button><a href="login_user.php"><i class="fas fa-sign-in-alt"></i></a></button>
@@ -50,11 +50,13 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
                 <div class="card"> 
                     <div class="article">
                         <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="<?php echo htmlspecialchars($article['nom']); ?>">
+                        <h4><?php echo htmlspecialchars($article['nom']); ?></h4>
                         <div class="detail_article">
                             <p><?php echo htmlspecialchars($article['description']); ?></p>
                             <p class="prix">prix: <?php echo htmlspecialchars($article['prix']); ?> f</p>
                             
                         </div>
+                        <a href="">Acheter</a>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -23,21 +23,26 @@ $articles = $sql->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
    
-    <h1>Gestion des Articles</h1>
+    <h1 class="gestion-title">Gestion des Articles</h1>
     <div class="container">
-        <div class="card">
+        <div class="articles-container">
             <?php foreach($articles as $article): ?>
-                <div class="article">
-               
+                <div class="gestion_article">
+                    <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="<?php echo htmlspecialchars($article['categorie']); ?>">
                     <h4><?php echo htmlspecialchars($article['categorie']); ?></h4>
-                    <img src="<?php echo htmlspecialchars($article['image']); ?>" alt="">
-                    <P>prix: <?php echo htmlspecialchars($article['prix']); ?> f</P>
-                    <p>Quantité: <?php echo htmlspecialchars($article['quantité']); ?></p> 
-                
+                    <div class="affiche_detail_article">
+                        <p><strong>Description:</strong> <?php echo htmlspecialchars($article['description']); ?></p>
+                        <span class="prix"><?php echo htmlspecialchars($article['prix']); ?> f</span>
+                        <p><strong>Quantité:</strong> <?php echo htmlspecialchars($article['quantité']); ?></p>
+                        
+                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
-        <a href="publier.php"> aller sur Publier un article</a>
+        <div class="gestion-nav-links">
+            <a href="publier.php">Publier un nouvel article</a>
+            <a href="publier.php">Retour à l'accueil</a>
+        </div>
     </div>
    
     

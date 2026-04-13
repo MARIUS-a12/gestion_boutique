@@ -10,7 +10,6 @@ try {
     $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     // configure pdo pour qu'il lance des exceptions d'erreurs
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connexion réussie !";
 } catch (PDOException $e) {
     // Si la connexion échoue, on attrape l'erreur
     if ($dev_mode) {
@@ -28,8 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
     $prix = $_POST["prix"] ?? null;
     $categorie = trim($_POST["categorie"] ?? "");
     $quantité = $_POST["quantité"] ?? null;
+    
+    $success_message = "";
+    $error_message = "";
+    
     if (!isset($_FILES["image"]) || $_FILES["image"]["error"] !== UPLOAD_ERR_OK) {
-        echo "<p style='color:red;'>Veuillez sélectionner une image valide.</p>";
+        $error_message = "Veuillez sélectionner une image valide.";
     } else {
         $image_name = basename($_FILES["image"]["name"]);
         $image_name = preg_replace('/[^A-Za-z0-9_.-]/', '_', $image_name);
@@ -44,12 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
             $requete = $db->prepare("INSERT INTO publication (nom, image, description, prix, categorie, quantité) VALUES(?, ?, ?, ?, ?, ?)");
 
             if ($requete->execute([$nom, $db_path, $description, $prix, $categorie, $quantité])) {
-                echo "<p style='color:green;'>Succès complet !</p>";
+                $success_message = "Article publié avec succès !";
             } else {
-                echo "<p style='color:red;'>Erreur base de données</p>";
+                $error_message = "Erreur lors de l'enregistrement en base de données.";
             }
         } else {
-            echo "<p style='color:red;'>Erreur lors de l'upload de l'image</p>";
+            $error_message = "Erreur lors de l'upload de l'image.";
         }
     }
 }
@@ -64,8 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body> 
-     <header>
-        <nav>  
+     <header class="publish-header">
+        <nav class="publish-nav">  
             <ul>
                 <li><a href="index.php">Accueil</a></li>
                 <li><a href="gestion_article.php">Gestion des Articles</a></li>
@@ -75,23 +78,55 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
             </ul>
         </nav>
     </header>
-    <h1>Publier un article</h1>
-    <form action="" method="POST" enctype="multipart/form-data">
-        <input type="text" name="nom" placeholder="Nom de l'article à publier" required>
-        <input type="file" name="image" accept="image/*" required>
-        <textarea name="description" placeholder="Description"></textarea>
-        <input type="number" name="prix" placeholder="Prix" required>
-        <input type="number" name="quantité" placeholder="Quantité disponible" required>
-        <select name="categorie" required>
-            <option value="">Sélectionnez une catégorie</option>
-            <option value="T-shirt">T-shirt</option>
-            <option value="casquette">Casquette</option>
-            <option value="telephone">Téléphone</option>
-            <option value="vetement">Vêtement</option>
-            <option value="parfum">Parfum</option>
-            <option value="ordinateur">Ordinateur</option>
-        </select>
-        <input type="submit" name="validation" value="Publier">
-    </form>
+    <div class="publish-container">
+        <h1 class="publish-title">Publier un article</h1>
+        <?php if(isset($success_message)): ?>
+            <div class="message success"><?php echo $success_message; ?></div>
+        <?php endif; ?>
+        <?php if(isset($error_message)): ?>
+            <div class="message error"><?php echo $error_message; ?></div>
+        <?php endif; ?>
+        <form action="" method="POST" enctype="multipart/form-data" class="publish-form">
+            <div class="form-group">
+                <label for="nom">Nom de l'article</label>
+                <input type="text" id="nom" name="nom" placeholder="Nom de l'article à publier" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Image de l'article</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Description de l'article"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="prix">Prix (FCFA)</label>
+                <input type="number" id="prix" name="prix" placeholder="Prix" min="0" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantité">Quantité disponible</label>
+                <input type="number" id="quantité" name="quantité" placeholder="Quantité disponible" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="categorie">Catégorie</label>
+                <select id="categorie" name="categorie" required>
+                    <option value="">Sélectionnez une catégorie</option>
+                    <option value="T-shirt">T-shirt</option>
+                    <option value="casquette">Casquette</option>
+                    <option value="telephone">Téléphone</option>
+                    <option value="vetement">Vêtement</option>
+                    <option value="parfum">Parfum</option>
+                    <option value="ordinateur">Ordinateur</option>
+                </select>
+            </div>
+            
+            <button type="submit" name="validation" class="form-submit">Publier l'article</button>
+        </form>
+    </div>
 </body>
 </html>
