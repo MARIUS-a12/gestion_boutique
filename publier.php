@@ -63,6 +63,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validation"])) {
     <title>Document</title>
 </head>
 <body>
+     <header>
+        <nav> 
+            <ul>
+                <li><a href="index.php">Accueil</a></li>
+                <li><a href="gestion_article.html">Gestion des Articles</a></li>
+                <li><a href="gestion_client.html">Gestion des Clients</a></li>
+                <li><a href="gestion_commande.html">Gestion des Commandes</a></li>
+                <li><a href="modif_article.html">Modification des Articles</a></li>
+            </ul>
+        </nav>
+    </header>
     <h1>Publier un article</h1>
     <form action="" method="POST" enctype="multipart/form-data">
         <input type="text" name="nom" placeholder="Nom de l'article à publier" required>

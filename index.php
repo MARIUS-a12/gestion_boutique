@@ -40,10 +40,10 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
         <button><a href="login_user.html"><i class="fas fa-sign-in-alt"></i></a></button>
     </header>
     <div class="container">
-        <form action="" class="search-box">
+        <f orm action="" class="search-box">
             <input type="text" placeholder="rechercher...">
-            <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
+            <button type="submit"><a href="#"><i class="fas fa-search"></i></a></button>
+        </f>
         <h1>Welcome to Loung</h1>
         <section>
             <?php foreach ($articles as $article): ?>
