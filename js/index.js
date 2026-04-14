@@ -1,11 +1,12 @@
 const compte = document.querySelector('.compte');
-const acheter = document.querySelector('.acheter');
+const acheteurs = document.querySelectorAll('.acheter');
 // fonction pour incrementer le compteur du panier
-acheter.addEventListener('click', () => {
-    let count = parseInt(compte.getAttribute('data-counter')) || 0;
-    count++;
-    compte.setAttribute('data-counter', count);
-
+acheteurs.forEach(acheter => {
+    acheter.addEventListener('click', () => {
+        let count = parseInt(compte.getAttribute('data-counter')) || 0;
+        count++;
+        compte.setAttribute('data-counter', count);
+    });
 });
 
 // =====================================

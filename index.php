@@ -34,17 +34,17 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
             <ul>
                 <li><a href="#"><i class="fas fa-envelope"></i></a></li>
                 <li><a href="#"><i class="fas fa-bell"></i></a></li> 
-                <li><a href="#"><i class="fas fa-cart-shopping " ></i></a></li> 
-                <li><i class="compte" data-counter=></i></li> 
+                <li><a href="panier.php"><i class="fas fa-cart-shopping " ></i></a></li> 
+                <li><i class="compte" data-counter=""></i></li> 
             </ul>  
         </nav>
         <button><a href="login_user.php"><i class="fas fa-sign-in-alt"></i></a></button>
     </header>
     <div class="container">
-        <f orm action="" class="search-box">
+        <form action="" class="search-box">
             <input type="text" placeholder="rechercher...">
             <button type="submit"><a href="#"><i class="fas fa-search"></i></a></button>
-        </f>
+        </form>
         <h1>Welcome to Loung</h1>
         <section>
             <?php foreach ($articles as $article): ?>
