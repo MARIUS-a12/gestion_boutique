@@ -102,6 +102,43 @@ class panier{
         // this.tracerAction('vidé', null, null);
     }
     // Envoter une requete au serveur pour tracer les actions du panier
+    tracerAction(action, publication_id, quantite){
+        fetch('panier.php', {
+            method: 'POST',
+            header: {
+                'content-type': 'application/json'  
+            },
+            body: JSON.stringify({
+                action: action,
+                publication_id: publication_id,
+                quantite: quantite 
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Action tracée enregistrée:', data);
+        })
+        .catch(error => console.error('Erreur Traçabilité:', error));
+        
+    }
+
+    // retourner le nombre total d'articles dans le panier
+    obtenirNombreArticles(){
+        const panier = this.obtenirPanier();
+        return panier.articles.length;
+    }
+    // retourner le temps restant avant l'expiration du panier
+    joursRestant(){
+        const panier = this.obtenirPanier();
+        const maintenant = Date.now();
+        const age_ms = maintenant - panier.timestamp;
+        const age_jours = age_ms / (1000 * 60 * 60 * 24);
+        const restant = this.jours_expiration - age_jours;
+        return Math.max(0, Math.ceil(restant)); 
+    }
 
 }
+
+// créer une instance du panier
+const monPanier = new panier();
  

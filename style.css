@@ -70,6 +70,7 @@ section{
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     padding: 20px;
+    
 }
 .card{ 
     display: flex;
@@ -609,4 +610,55 @@ h1{
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+/*  ..............Panier....... */
+.section{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: #bfecf1;
+    width: 100%;
+    height: auto;
+    gap: 40px;
+    
+}
+.commande{
+    display: flex;
+    flex-grow: 5;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    width: 300px;
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+.total{
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    width: 20px; 
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+/* .............compter lorsque je clique suis le buton acheter........ */
+.compte::before{
+    content: attr(data-counter);
+    width: auto;
+    height: 1rem;
+    padding: .0rem;
+    font-weight: 500;
+    position: relative;
+    top: -14px;
+    right: 50px;
+    color: orange;
+    z-index: -1;
+
+
 }
