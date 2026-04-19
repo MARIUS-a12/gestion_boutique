@@ -14,8 +14,14 @@ try {
     die("Erreur de connexion : " . $e->getMessage());
 }
 
-$requete = $db->query("SELECT * FROM publication");
-$articles = $requete->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer les articles
+try {
+    $requete = $db->query("SELECT * FROM publication");
+    $articles = $requete ? $requete->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (PDOException $e) {
+    $articles = [];
+    echo "<p>Erreur lors du chargement des articles: " . htmlspecialchars($e->getMessage()) . "</p>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,18 +40,24 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
             <ul>
                 <li><a href="#"><i class="fas fa-envelope"></i></a></li>
                 <li><a href="#"><i class="fas fa-bell"></i></a></li> 
-                <li><a href="panier.php"><i class="fas fa-cart-shopping " ></i></a></li> 
-                <li><i class="compte" data-counter=""></i></li> 
+                <li>
+                    <a href="panier.php">
+                        <i class="fas fa-cart-shopping"></i>
+                        <span class="badge-panier" style="display: none;">0</span>
+                    </a>
+                </li>
             </ul>  
         </nav>
         <button><a href="login_user.php"><i class="fas fa-sign-in-alt"></i></a></button>
     </header>
+    
     <div class="container">
         <form action="" class="search-box">
             <input type="text" placeholder="rechercher...">
             <button type="submit"><a href="#"><i class="fas fa-search"></i></a></button>
         </form>
         <h1>Welcome to Loung</h1>
+        
         <section>
             <?php foreach ($articles as $article): ?>
                 <div class="card"> 
@@ -55,14 +67,20 @@ $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
                         <div class="detail_article">
                             <p><?php echo htmlspecialchars($article['description']); ?></p>
                             <p class="prix">prix: <?php echo htmlspecialchars($article['prix']); ?> f</p>
-                            
                         </div>
-                        <button class="acheter">Acheter</button>
+                        <button onclick="ajouterAuPanier(
+                            <?php echo intval($article['id']); ?>,
+                            '<?php echo addslashes(htmlspecialchars($article['nom'])); ?>',
+                            1,
+                            <?php echo floatval($article['prix']); ?>,
+                            '<?php echo htmlspecialchars($article['image']); ?>'
+                        )">🛒 Acheter</button>
                     </div>
                 </div>
             <?php endforeach; ?>
         </section>
     </div>
+
     <script src="js/index.js"></script>  
 </body>
 </html>
