@@ -2,15 +2,11 @@
 session_start();
 header('Content-Type: application/json');
 
-// Vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Non authentifié']);
-    exit;
-}
-
 // Récupérer les données JSON du panier
 $data = json_decode(file_get_contents('php://input'), true);
+
+// Autoriser les commandes même sans session utilisateur
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 
 if (!$data || !isset($data['articles'])) {
     http_response_code(400);
@@ -18,7 +14,6 @@ if (!$data || !isset($data['articles'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 $articles = $data['articles'];
 $total = isset($data['total']) ? floatval($data['total']) : 0;
 

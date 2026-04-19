@@ -2,13 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Non authentifié']);
-    exit;
-}
-
 // Récupérer les données JSON
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -18,7 +11,7 @@ if (!$data || !isset($data['action']) || !isset($data['publication_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 $action = $data['action'];
 $publication_id = intval($data['publication_id']);
 $quantite = isset($data['quantite']) ? intval($data['quantite']) : 0;

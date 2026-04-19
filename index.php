@@ -54,7 +54,7 @@ try {
     <div class="container">
         <form action="" class="search-box">
             <input type="text" placeholder="rechercher...">
-            <button type="submit"><a href="#"><i class="fas fa-search"></i></a></button>
+            <button type="submit"><i class="fas fa-search"></i></button>
         </form>
         <h1>Welcome to Loung</h1>
         
@@ -68,13 +68,13 @@ try {
                             <p><?php echo htmlspecialchars($article['description']); ?></p>
                             <p class="prix">prix: <?php echo htmlspecialchars($article['prix']); ?> f</p>
                         </div>
-                        <button onclick="ajouterAuPanier(
-                            <?php echo intval($article['id']); ?>,
-                            '<?php echo addslashes(htmlspecialchars($article['nom'])); ?>',
-                            1,
-                            <?php echo floatval($article['prix']); ?>,
-                            '<?php echo htmlspecialchars($article['image']); ?>'
-                        )">🛒 Acheter</button>
+                        <button type="button" class="acheter"
+                            data-id="<?php echo intval($article['id']); ?>"
+                            data-nom="<?php echo htmlspecialchars($article['nom'], ENT_QUOTES); ?>"
+                            data-prix="<?php echo floatval($article['prix']); ?>"
+                            data-image="<?php echo htmlspecialchars($article['image'], ENT_QUOTES); ?>">
+                            🛒 Acheter
+                        </button>
                     </div>
                 </div>
             <?php endforeach; ?>

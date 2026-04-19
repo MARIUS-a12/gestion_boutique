@@ -177,7 +177,7 @@ session_start();
             btnCommander.disabled = true;
             btnCommander.textContent = '⏳ Création de la commande...';
 
-            fetch('creer_commande.php', {
+            fetch('commande_user.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

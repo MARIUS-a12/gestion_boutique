@@ -90,7 +90,7 @@ class Panier {
     }
 
     tracerAction(action, publication_id, quantite) {
-        fetch('ajouter_panier.php', {
+        fetch('ajouter.panier.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -132,11 +132,30 @@ class Panier {
 
 const monPanier = new Panier();
 
+function initialiserBoutonsAcheter() {
+    document.querySelectorAll('.acheter').forEach(button => {
+        button.addEventListener('click', function() {
+            const publication_id = parseInt(this.dataset.id, 10);
+            const nom = this.dataset.nom;
+            const quantite = 1;
+            const prix = parseFloat(this.dataset.prix);
+            const image = this.dataset.image;
+
+            monPanier.ajouterArticle(publication_id, nom, quantite, prix, image);
+            afficherNotification('✅ Article ajouté au panier!', 'success');
+            mettreAJourCompteur();
+        });
+    });
+}
+
 function ajouterAuPanier(publication_id, nom, quantite, prix, image) {
     monPanier.ajouterArticle(publication_id, nom, quantite, prix, image);
     afficherNotification('✅ Article ajouté au panier!', 'success');
     mettreAJourCompteur();
 }
+
+// Exposer la fonction globalement pour les anciens onclick éventuels
+window.ajouterAuPanier = ajouterAuPanier;
 
 function afficherNotification(message, type = 'info') {
     const notif = document.createElement('div');
@@ -160,5 +179,6 @@ function mettreAJourCompteur() {
 
 document.addEventListener('DOMContentLoaded', function() {
     mettreAJourCompteur();
+    initialiserBoutonsAcheter();
     console.log('✅ Panier initialisé');
 });
