@@ -1,26 +1,63 @@
 <?php
 require_once 'config.php';
 
-// Récupérer les articles avec pagination
+// Vérifier si c'est une recherche
+$recherche = isset($_GET['q']) ? trim($_GET['q']) : '';
+$isSearch = !empty($recherche);
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$limit = 12; // 12 articles par page
+$limit = 12;
 $offset = ($page - 1) * $limit;
 
 try {
     $pdo = get_db_connection();
-    $requete = $pdo->prepare("SELECT * FROM publication LIMIT :limit OFFSET :offset");
-    $requete->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $requete->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $requete->execute();
-    $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
 
-    // Compter le total pour la pagination
-    $totalQuery = $pdo->query("SELECT COUNT(*) FROM publication");
-    $totalArticles = $totalQuery->fetchColumn();
+    if ($isSearch) {
+        // Requête de recherche SIMPLIFIÉE
+        $searchQuery = "%" . $recherche . "%";
+        $requete = $pdo->prepare("
+            SELECT *
+            FROM publication
+            WHERE 
+                LOWER(nom) LIKE LOWER(:search) 
+                OR LOWER(description) LIKE LOWER(:search) 
+                OR LOWER(categorie) LIKE LOWER(:search)
+            LIMIT :limit OFFSET :offset
+        ");
+        $requete->bindValue(':search', $searchQuery);
+        $requete->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $requete->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $requete->execute();
+        $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+        // Compter le total des résultats
+        $countQuery = $pdo->prepare("
+            SELECT COUNT(*) as total 
+            FROM publication
+            WHERE 
+                LOWER(nom) LIKE LOWER(:search) 
+                OR LOWER(description) LIKE LOWER(:search) 
+                OR LOWER(categorie) LIKE LOWER(:search)
+        ");
+        $countQuery->bindValue(':search', $searchQuery);
+        $countQuery->execute();
+        $totalArticles = $countQuery->fetchColumn();
+    } else {
+        // Requête normale : tous les articles
+        $requete = $pdo->prepare("SELECT * FROM publication LIMIT :limit OFFSET :offset");
+        $requete->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $requete->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $requete->execute();
+        $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+        $totalQuery = $pdo->query("SELECT COUNT(*) FROM publication");
+        $totalArticles = $totalQuery->fetchColumn();
+    }
+
     $totalPages = ceil($totalArticles / $limit);
 } catch (PDOException $e) {
     $articles = [];
     $totalPages = 1;
+    $totalArticles = 0;
     if (DEV_MODE) {
         echo "<p>Erreur lors du chargement des articles: " . htmlspecialchars($e->getMessage()) . "</p>";
     } else {
@@ -57,11 +94,26 @@ try {
     </header>
     
     <div class="container">
-        <form action="" class="search-box">
-            <input type="text" placeholder="rechercher...">
-            <button type="submit"><i class="fas fa-search"></i></button>
+        <!-- FORMULAIRE DE RECHERCHE -->
+        <form method="GET" class="search-box">
+            <input type="text" name="q" placeholder="rechercher..." value="<?php echo htmlspecialchars($recherche); ?>">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
         </form>
+        
         <h1>Welcome to Loung</h1>
+        
+        <?php if ($isSearch): ?>
+            <h2>Résultats de recherche pour "<?php echo htmlspecialchars($recherche); ?>"</h2>
+            <?php if (empty($articles)): ?>
+                <div class="aucun-resultat">
+                    <p style="text-align: center; font-size: 18px; color: #999; margin: 40px 0;">
+                        ❌ Aucun résultat trouvé
+                    </p>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
         
         <section>
             <?php foreach ($articles as $article): ?>
@@ -86,18 +138,18 @@ try {
         </section>
 
         <!-- Pagination -->
-        <?php if ($totalPages > 1): ?>
+        <?php if ($totalPages > 1 && !empty($articles)): ?>
         <div class="pagination">
             <?php if ($page > 1): ?>
-                <a href="?page=<?php echo $page - 1; ?>" class="page-link">Précédent</a>
+                <a href="?<?php echo $isSearch ? 'q=' . urlencode($recherche) . '&' : ''; ?>page=<?php echo $page - 1; ?>" class="page-link">Précédent</a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?php echo $i; ?>" class="page-link <?php echo $i == $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <a href="?<?php echo $isSearch ? 'q=' . urlencode($recherche) . '&' : ''; ?>page=<?php echo $i; ?>" class="page-link <?php echo $i == $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
             <?php endfor; ?>
 
             <?php if ($page < $totalPages): ?>
-                <a href="?page=<?php echo $page + 1; ?>" class="page-link">Suivant</a>
+                <a href="?<?php echo $isSearch ? 'q=' . urlencode($recherche) . '&' : ''; ?>page=<?php echo $page + 1; ?>" class="page-link">Suivant</a>
             <?php endif; ?>
         </div>
         <?php endif; ?>
