@@ -1,17 +1,25 @@
 <?php
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$dbname = 'boutique';
-try{
-    $db =new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+require_once 'config.php';
 
-}catch(PDOException $e){
-    die("Erreur de connexion : " . $e->getMessage());
-}
-$sql = $db->query("SELECT * FROM publication");
-$articles = $sql->fetchAll(PDO::FETCH_ASSOC);
+$db = get_db_connection();
+
+// Requête qui calcule la quantité disponible (quantité en BDD - quantité commandée)
+$sql = "SELECT 
+            p.id,
+            p.categorie,
+            p.description,
+            p.prix,
+            p.image,
+            p.quantité,
+            COALESCE(SUM(lc.quantite), 0) as quantite_commandee,
+            (p.quantité - COALESCE(SUM(lc.quantite), 0)) as quantite_disponible
+        FROM publication p
+        LEFT JOIN ligne_commande lc ON p.id = lc.publication_id
+        GROUP BY p.id, p.categorie, p.description, p.prix, p.image, p.quantité
+        ORDER BY p.id DESC";
+
+$query = $db->query($sql);
+$articles = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,14 +41,14 @@ $articles = $sql->fetchAll(PDO::FETCH_ASSOC);
                     <div class="affiche_detail_article">
                         <p><strong>Description:</strong> <?php echo htmlspecialchars($article['description']); ?></p>
                         <span class="prix"><?php echo htmlspecialchars($article['prix']); ?> f</span>
-                        <p><strong>Quantité:</strong> <?php echo htmlspecialchars($article['quantité']); ?></p>
-                        
+                        <p><strong>Quantité en stock:</strong> <?php echo htmlspecialchars($article['quantité']); ?></p>
+                        <p><strong>Quantité commandée:</strong> <?php echo htmlspecialchars($article['quantite_commandee']); ?></p>
+                        <p><strong>Quantité disponible:</strong> <span style="color: <?php echo $article['quantite_disponible'] > 0 ? 'green' : 'red'; ?>; font-weight: bold;"><?php echo htmlspecialchars($article['quantite_disponible']); ?></span></p>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
         <div class="gestion-nav-links">
-            <a href="publier.php">Publier un nouvel article</a>
             <a href="publier.php">Retour à l'accueil</a>
         </div>
     </div>

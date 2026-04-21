@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php';
 header('Content-Type: application/json');
 
 // Récupérer les données JSON
@@ -15,26 +16,22 @@ $user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 $action = $data['action'];
 $publication_id = intval($data['publication_id']);
 $quantite = isset($data['quantite']) ? intval($data['quantite']) : 0;
+$publication_nom = isset($data['publication_nom']) ? trim($data['publication_nom']) : '';
 
 try {
-    $host = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "boutique";
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = get_db_connection();
 
     // Insérer le log dans panier_logs
-    $query = "INSERT INTO panier_logs (user_id, publication_id, action, quantite) 
-              VALUES (:user_id, :publication_id, :action, :quantite)";
+    $query = "INSERT INTO panier_logs (user_id, publication_id, action, quantite, publication_nom) 
+              VALUES (:user_id, :publication_id, :action, :quantite, :publication_nom)";
     
     $stmt = $pdo->prepare($query);
     $stmt->execute([
         ':user_id' => $user_id,
         ':publication_id' => $publication_id,
         ':action' => $action,
-        ':quantite' => $quantite
+        ':quantite' => $quantite,
+        ':publication_nom' => $publication_nom
     ]);
 
     echo json_encode([

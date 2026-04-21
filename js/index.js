@@ -51,7 +51,7 @@ class Panier {
 
         panier.timestamp = Date.now();
         this.sauvegarderPanier(panier);
-        this.tracerAction('ajouté', publication_id, quantite);
+        this.tracerAction('ajouté', publication_id, quantite, nom);
         return true;
     }
 
@@ -65,9 +65,9 @@ class Panier {
 
             if (nouvelleQuantite <= 0) {
                 panier.articles = panier.articles.filter(article => article.publication_id !== publication_id);
-                this.tracerAction('supprimé', publication_id, ancienneQuantite);
+                this.tracerAction('supprimé', publication_id, ancienneQuantite, article.nom);
             } else {
-                this.tracerAction('quantité_modifiée', publication_id, nouvelleQuantite);
+                this.tracerAction('quantité_modifiée', publication_id, nouvelleQuantite, article.nom);
             }
 
             this.sauvegarderPanier(panier);
@@ -81,7 +81,7 @@ class Panier {
         if (article) {
             panier.articles = panier.articles.filter(article => article.publication_id !== publication_id);
             this.sauvegarderPanier(panier);
-            this.tracerAction('supprimé', publication_id, article.quantite);
+            this.tracerAction('supprimé', publication_id, article.quantite, article.nom);
         }
     }
 
@@ -89,8 +89,8 @@ class Panier {
         localStorage.removeItem(this.clePanier);
     }
 
-    tracerAction(action, publication_id, quantite) {
-        fetch('ajouter.panier.php', {
+    tracerAction(action, publication_id, quantite, publication_nom = '') {
+        fetch('ajouter_panier.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -98,7 +98,8 @@ class Panier {
             body: JSON.stringify({
                 action: action,
                 publication_id: publication_id,
-                quantite: quantite
+                quantite: quantite,
+                publication_nom: publication_nom
             })
         })
             .then(response => response.json())
