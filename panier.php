@@ -31,6 +31,10 @@ session_start();
         <div id="contenuPanier"></div>
     </div>
 
+    <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
+
     <script src="js/index.js"></script>
 
     <script>
@@ -165,6 +169,15 @@ session_start();
 
         // Passer la commande
         function passerCommande() {
+            // Vérifier si l'utilisateur est connecté
+            if (!isLoggedIn) {
+                afficherNotification('📋 Créez un compte pour passer votre commande', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login_user.php?redirect=panier';
+                }, 2500);
+                return;
+            }
+
             const paniObj = monPanier.obtenirPanier();
 
             if (paniObj.articles.length === 0) {

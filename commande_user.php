@@ -1,12 +1,22 @@
 <?php
-session_start();
+require_once 'config.php';
 header('Content-Type: application/json');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
 
 // Récupérer les données JSON du panier
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Autoriser les commandes même sans session utilisateur
-$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
+// Vérifier que l'utilisateur est connecté
+if (!isset($_SESSION['user_id']) || intval($_SESSION['user_id']) <= 0) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
+    exit;
+}
+
+$user_id = intval($_SESSION['user_id']);
+$user_id_value = $user_id > 0 ? $user_id : null;
 
 if (!$data || !isset($data['articles'])) {
     http_response_code(400);
@@ -25,13 +35,7 @@ if (empty($articles)) {
 }
 
 try {
-    $host = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "boutique";
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = get_db_connection();
 
     // Démarrer une transaction
     $pdo->beginTransaction();
@@ -46,8 +50,8 @@ try {
     $commande_id = $pdo->lastInsertId();
 
     // 2. Ajouter chaque article à la commande
-    $queryArticle = "INSERT INTO ligne_commande (commande_id, publication_id, quantite, prix) 
-                     VALUES (:commande_id, :publication_id, :quantite, :prix)";
+    $queryArticle = "INSERT INTO ligne_commande (commande_id, publication_id, quantite, prix, publication_nom) 
+                     VALUES (:commande_id, :publication_id, :quantite, :prix, :publication_nom)";
     
     $stmtArticle = $pdo->prepare($queryArticle);
 
@@ -55,6 +59,7 @@ try {
         $publication_id = intval($article['publication_id']);
         $quantite = intval($article['quantite']);
         $prix = floatval($article['prix']);
+        $publication_nom = $article['nom'];
 
         // Vérifier que l'article existe en base de données
         $queryCheck = "SELECT id, prix FROM publication WHERE id = :id";
@@ -73,7 +78,8 @@ try {
             ':commande_id' => $commande_id,
             ':publication_id' => $publication_id,
             ':quantite' => $quantite,
-            ':prix' => $prix_final
+            ':prix' => $prix_final,
+            ':publication_nom' => $publication_nom
         ]);
     }
 

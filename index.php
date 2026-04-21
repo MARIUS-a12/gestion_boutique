@@ -1,26 +1,31 @@
 <?php
-// identifiant de connexion
-$host = "localhost";
-$username = "root";
-$password = "";
-$dbname = "boutique";
+require_once 'config.php';
 
-// connexion a la base
-try {
-    $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    // configure pdo pour qu'il lance des exceptions d'erreurs
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
-}
+// Récupérer les articles avec pagination
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$limit = 12; // 12 articles par page
+$offset = ($page - 1) * $limit;
 
-// Récupérer les articles
 try {
-    $requete = $db->query("SELECT * FROM publication");
-    $articles = $requete ? $requete->fetchAll(PDO::FETCH_ASSOC) : [];
+    $pdo = get_db_connection();
+    $requete = $pdo->prepare("SELECT * FROM publication LIMIT :limit OFFSET :offset");
+    $requete->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $requete->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $requete->execute();
+    $articles = $requete->fetchAll(PDO::FETCH_ASSOC);
+
+    // Compter le total pour la pagination
+    $totalQuery = $pdo->query("SELECT COUNT(*) FROM publication");
+    $totalArticles = $totalQuery->fetchColumn();
+    $totalPages = ceil($totalArticles / $limit);
 } catch (PDOException $e) {
     $articles = [];
-    echo "<p>Erreur lors du chargement des articles: " . htmlspecialchars($e->getMessage()) . "</p>";
+    $totalPages = 1;
+    if (DEV_MODE) {
+        echo "<p>Erreur lors du chargement des articles: " . htmlspecialchars($e->getMessage()) . "</p>";
+    } else {
+        echo "<p>Erreur de chargement des articles.</p>";
+    }
 }
 ?>
 
@@ -79,6 +84,23 @@ try {
                 </div>
             <?php endforeach; ?>
         </section>
+
+        <!-- Pagination -->
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?php echo $page - 1; ?>" class="page-link">Précédent</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?php echo $i; ?>" class="page-link <?php echo $i == $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?php echo $page + 1; ?>" class="page-link">Suivant</a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 
     <script src="js/index.js"></script>  

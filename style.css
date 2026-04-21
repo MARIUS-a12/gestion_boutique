@@ -292,6 +292,21 @@ footer{
     left: 0;
 }
 
+.login-message {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #e7f3ff;
+    border-left: 4px solid #007bff;
+    color: #004085;
+    border-radius: 5px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 h1{
     display: flex;
     justify-content: center;
@@ -897,6 +912,35 @@ h1{
     display: flex;
     gap: 10px;
     margin-top: 20px;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    gap: 10px;
+}
+
+.page-link {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.page-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
 }
 
 .btn-commander {
